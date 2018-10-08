@@ -14,6 +14,10 @@ fn get_str_for_print(stdout: String, filename: &str) -> String {
     } else if stdout == format!("{}@", filename) {
         return filename.cyan().bold().to_string();
     } else if stdout != filename {
+        let filename_iter = filename.chars();
+        if filename_iter.last().unwrap() == '/' {
+            return "".to_string();
+        }
         return filename.blue().bold().to_string();
     } else {
         return filename.to_string();
@@ -22,14 +26,17 @@ fn get_str_for_print(stdout: String, filename: &str) -> String {
 
 fn print_files(files_oneline: String) {
     let files: Vec<&str> = files_oneline.split("\n").collect();
-    let blue_period = ".".blue().bold().to_string();
+    let empty_string = "".to_string();
     for x in files {
         let x = x.replace("./", "");
         let oput = system(&["ls", "-F", &x]);
         match oput {
             Ok(oput) => {
+                if &oput.stdout == "." {
+                    continue
+                }
                 let str_for_print = get_str_for_print(oput.stdout, &x);
-                if str_for_print == blue_period {
+                if str_for_print == empty_string {
                     continue
                 }
                 println!("{}", str_for_print);
