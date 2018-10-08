@@ -42,7 +42,8 @@ fn print_files(files_oneline: String) {
                 println!("{}", str_for_print);
             },
             Err(oput) => {
-                my_eprint(oput.stderr);
+                //my_eprint(oput.stderr);
+                continue
             }
         }
     }
