@@ -78,6 +78,7 @@ fn main() {
             if oput.stdout != "" {
                 if matches.is_present("0") {
                     print!("{} ", oput.stdout.replace("\n", "\x00"));
+                    print!("\x00");
                 }
                 else {
                     println!("{}", oput.stdout.blue().bold().to_string());
