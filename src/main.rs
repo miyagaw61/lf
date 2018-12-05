@@ -6,112 +6,100 @@ extern crate regex;
 use renert::*;
 use colored::*;
 use clap::{App, Arg};
-use regex::Regex;
 
-fn get_str_for_print(stdout: String, filename: &str) -> String {
-    if stdout == format!("{}*", filename) {
-        return filename.green().bold().to_string();
-    } else if stdout == format!("{}@", filename) {
-        return filename.cyan().bold().to_string();
-    } else if stdout != filename {
-        let filename_iter = filename.chars();
-        if filename_iter.last().unwrap() == '/' {
-            return "".to_string();
-        }
-        return filename.blue().bold().to_string();
-    } else {
-        return filename.to_string();
+fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
+    let mut fd_d = "fd --type d ".to_string();
+    let mut fd_f = "fd --type f --type l ".to_string();
+    if ! matches.is_present("all") {
+        fd_d = [&fd_d, "-d1 "].join("");
+        fd_f = [&fd_f, "-d1 "].join("");
     }
-}
-
-fn print_files(files_oneline: String) {
-    let files: Vec<&str> = files_oneline.split("\n").collect();
-    let empty_string = "".to_string();
-    for x in files {
-        let x = x.replace("./", "");
-        let oput = system(&["ls", "-F", &x]);
-        match oput {
-            Ok(oput) => {
-                if &oput.stdout == "." {
-                    continue
-                }
-                let str_for_print = get_str_for_print(oput.stdout, &x);
-                if str_for_print == empty_string {
-                    continue
-                }
-                println!("{}", str_for_print);
-            },
-            Err(oput) => {
-                //my_eprint(oput.stderr);
-                continue
+    match matches.values_of("exclude") {
+        Some(exclude) => {
+            for x in exclude {
+                let glob = x.replace("@", "*");
+                fd_d = [&fd_d, "-E '", &glob, "' "].join("");
+                fd_f = [&fd_f, "-E '", &glob, "' "].join("");
             }
-        }
-    }
-}
-
-fn get_cmd(dir: &str, base: &str, allflg: bool) -> String {
-    match allflg {
-        true => {
-            return format!("find {} -maxdepth 1 -name '{}' -printf '%p\n'", dir, base).to_string();
         },
-        false => {
-            return format!("find {} -maxdepth 1 -name '{}' -not -name '.*' -printf '%p\n'", dir, base).to_string();
-        }
+        None => {}
     }
-}
-
-fn decode_and_print(dir: &str, base: &str, allflg: bool) {
-    let cmd = get_cmd(dir, base, allflg);
-    let oput = system_on_shell(&cmd);
-    match oput {
-        Ok(oput) => {
-            print_files(oput.stdout);
+    let mut cmd_d = "".to_string();
+    let mut cmd_f = "".to_string();
+    match matches.values_of("PATTERNS") {
+        Some(patterns) => {
+            for (i, pattern) in patterns.enumerate() {
+                if i == 0 {
+                    cmd_d = [&cmd_d, pattern].join("");
+                    cmd_f = [&cmd_f, pattern].join("");
+                }
+                else {
+                    cmd_d = [&cmd_d, " | rg ", pattern].join("");
+                    cmd_f = [&cmd_f, " | rg ", pattern].join("");
+                }
+            }
         },
-        Err(oput) => {
-            my_eprint(oput.stderr);
-        }
+        None => {}
     }
-}
-
-fn lf(param: &str, dir_regex: &Regex, allflg: bool) {
-    let dir = dir_regex.find(param);
-    match dir {
-        Some(dir) => {
-            let dir = dir.as_str();
-            let base = dir_regex.replace(param, "");
-            decode_and_print(dir, &base, allflg);
-        },
-        None => {
-            decode_and_print("", param, allflg);
-        }
-    }
+    cmd_d = [fd_d, cmd_d].join("");
+    cmd_f = [fd_f, cmd_f].join("");
+    return (cmd_d.to_string(), cmd_f.to_string());
 }
 
 fn main() {
-    let dir_regex = Regex::new(".*/").unwrap();
     let matches = App::new("lf")
         .version("0.0.1")
-        .arg(Arg::with_name("PATTERN")
-             .help("file path pattern")
+        .arg(Arg::with_name("PATTERNS")
+             .help("regex patterns")
+             .takes_value(true)
+             .multiple(true)
+             )
+        .arg(Arg::with_name("exclude")
+             .help("exclude")
+             .short("e")
+             .long("exclude")
              .takes_value(true)
              .multiple(true)
              )
         .arg(Arg::with_name("all")
-             .help("Prints all")
+             .help("all depth")
              .short("a")
              .long("all")
              )
+        .arg(Arg::with_name("0")
+             .help("null separate")
+             .short("0")
+             )
         .get_matches();
-    match matches.values_of("PATTERN") {
-        Some(params) => {
-            let allflg = matches.is_present("all");
-            for x in params {
-                lf(x, &dir_regex, allflg);
+    let (d_cmd, f_cmd) = make_cmd(&matches);
+    match system_on_shell(&d_cmd) {
+        Ok(oput) => {
+            if oput.stdout != "" {
+                if matches.is_present("0") {
+                    print!("{} ", oput.stdout.replace("\n", "\x00"));
+                }
+                else {
+                    println!("{}", oput.stdout.blue().bold().to_string());
+                }
             }
         },
-        _ => {
-            let allflg = matches.is_present("all");
-            decode_and_print("", "*", allflg);
+        Err(oput) => {
+            println!("ERROR: {}", oput.stderr);
+        }
+    }
+    match system_on_shell(&f_cmd) {
+        Ok(oput) => {
+            if oput.stdout != "" {
+                if matches.is_present("0") {
+                    print!("{} ", oput.stdout.replace("\n", "\x00"));
+                }
+                else {
+                    println!("{}", oput.stdout);
+                }
+            }
+        },
+        Err(oput) => {
+            println!("ERROR: {}", oput.stderr);
         }
     }
 }
