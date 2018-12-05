@@ -29,13 +29,14 @@ fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
     match matches.values_of("PATTERNS") {
         Some(patterns) => {
             for (i, pattern) in patterns.enumerate() {
+                let pattern = pattern.replace("\\", "\\\\");
                 if i == 0 {
-                    cmd_d = [&cmd_d, pattern].join("");
-                    cmd_f = [&cmd_f, pattern].join("");
+                    cmd_d = [&cmd_d, pattern.as_str()].join("");
+                    cmd_f = [&cmd_f, pattern.as_str()].join("");
                 }
                 else {
-                    cmd_d = [&cmd_d, " | rg ", pattern].join("");
-                    cmd_f = [&cmd_f, " | rg ", pattern].join("");
+                    cmd_d = [&cmd_d, " | rg ", &pattern].join("");
+                    cmd_f = [&cmd_f, " | rg ", &pattern].join("");
                 }
             }
         },
