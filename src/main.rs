@@ -1,7 +1,6 @@
 extern crate renert;
 extern crate clap;
 extern crate colored;
-extern crate regex;
 
 use renert::*;
 use colored::*;

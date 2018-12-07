@@ -7,4 +7,3 @@ authors = ["miyagaw61 <miyagaw61@gmail.com>"]
 renert = { git = "https://github.com/miyagaw61/renert" }
 clap = "2.32.0"
 colored = "1.6.1"
-regex = "1.0.5"
