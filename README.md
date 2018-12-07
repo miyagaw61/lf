@@ -5,9 +5,19 @@ lf - Rust製find代替コマンドであるfdのラッパーコマンド
 ## Install
 
 ```
-wget https://github.com/sharkdp/fd/releases/download/v7.2.0/fd_7.2.0_amd64.deb && sudo dpkg -i ./fd_7.2.0_amd64.deb
-cargo install ripgrep
-cargo install --git https://github.com/miyagaw61/lf
+$ wget https://github.com/sharkdp/fd/releases/download/v7.2.0/fd_7.2.0_amd64.deb && sudo dpkg -i ./fd_7.2.0_amd64.deb
+$ cargo install ripgrep
+$ cargo install --git https://github.com/miyagaw61/lf
+$ vim /usr/local/bin/baserg
+$ cat /usr/local/bin/baserg
+#!/usr/bin/env bash
+
+base=$(basename $2)
+dir=$(dirname $2)
+res=$(echo $base | rg $1)
+if [ -n "$res" ] ;then
+    echo $dir/$res
+fi
 ```
 
 fdのバージョンは任意

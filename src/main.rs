@@ -34,8 +34,8 @@ fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
                     cmd_f = [&cmd_f, pattern.as_str()].join("");
                 }
                 else {
-                    cmd_d = [&cmd_d, " | rg ", &pattern].join("");
-                    cmd_f = [&cmd_f, " | rg ", &pattern].join("");
+                    cmd_d = [&cmd_d, " | xargs -I {0} baserg ", &pattern, " {0}"].join("");
+                    cmd_f = [&cmd_f, " | xargs -I {0} baserg ", &pattern, " {0}"].join("");
                 }
             }
         },
@@ -104,3 +104,4 @@ fn main() {
         }
     }
 }
+
