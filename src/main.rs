@@ -51,6 +51,9 @@ fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
     }
     cmd_d = [fd_d, cmd_d].join("");
     cmd_f = [fd_f, cmd_f].join("");
+    if matches.is_present("file") {
+        cmd_d = "echo '' > /dev/null".to_string();
+    }
     return (cmd_d.to_string(), cmd_f.to_string());
 }
 
@@ -77,6 +80,11 @@ fn main() {
         .arg(Arg::with_name("0")
              .help("null separate")
              .short("0")
+             )
+        .arg(Arg::with_name("file")
+             .help("file only")
+             .long("file")
+             .short("f")
              )
         .get_matches();
     let (d_cmd, f_cmd) = make_cmd(&matches);
