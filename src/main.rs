@@ -34,8 +34,16 @@ fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
                     cmd_f = [&cmd_f, pattern.as_str()].join("");
                 }
                 else {
-                    cmd_d = [&cmd_d, " | xargs -I {0} baserg ", &pattern, " {0}"].join("");
-                    cmd_f = [&cmd_f, " | xargs -I {0} baserg ", &pattern, " {0}"].join("");
+                    let pattern_len = pattern.chars().count();
+                    let last_pattern = pattern.chars().nth(pattern_len-1).unwrap();
+                    if last_pattern == '$' {
+                        cmd_d = [&cmd_d, " | rg '[^/]*", &pattern, "'"].join("");
+                        cmd_f = [&cmd_d, " | rg '[^/]*", &pattern, "'"].join("");
+                    }
+                    else {
+                        cmd_d = [&cmd_d, " | rg '[^/]*", &pattern, "[^/]*$'"].join("");
+                        cmd_f = [&cmd_d, " | rg '[^/]*", &pattern, "[^/]*$'"].join("");
+                    }
                 }
             }
         },
