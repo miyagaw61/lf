@@ -59,8 +59,15 @@ fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
     }
     cmd_d = [fd_d, cmd_d].join("");
     cmd_f = [fd_f, cmd_f].join("");
-    if matches.is_present("file") {
-        cmd_d = "echo '' > /dev/null".to_string();
+    match matches.value_of("type") {
+        Some(typ) => {
+            if typ == "f" {
+                cmd_d = "echo '' > /dev/null".to_string();
+            } else if typ == "d" {
+                cmd_f = "echo '' > /dev/null".to_string();
+            }
+        },
+        None => {}
     }
     return (cmd_d.to_string(), cmd_f.to_string());
 }
@@ -89,10 +96,12 @@ fn main() {
              .help("null separate")
              .short("0")
              )
-        .arg(Arg::with_name("file")
-             .help("file only")
-             .long("file")
-             .short("f")
+        .arg(Arg::with_name("type")
+             .help("file type(f or d)")
+             .long("type")
+             .short("t")
+             .takes_value(true)
+             )
         .arg(Arg::with_name("depth")
              .help("max depth")
              .long("depth")
