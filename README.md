@@ -5,12 +5,10 @@ lf - Rust製find代替コマンドであるfdのラッパーコマンド
 ## Install
 
 ```
-$ wget https://github.com/sharkdp/fd/releases/download/v7.2.0/fd_7.2.0_amd64.deb && sudo dpkg -i ./fd_7.2.0_amd64.deb
 $ cargo install ripgrep
+$ cargo install --git https://github.com/sharkdp/fd
 $ cargo install --git https://github.com/miyagaw61/lf
 ```
-
-fdのバージョンは任意
 
 ## Usage
 
