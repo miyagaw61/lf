@@ -57,38 +57,38 @@ lf --type f ^tmp
 lf -tf ^tmp
 ```
 
-カレントディレクトリにあるtmpもしくはtestから始まるファイルを検索するには
+カレントディレクトリにあるtmpから始まりtestを含むファイルを検索するには
 
 ```
-lf ^tmp ^test
+lf ^tmp test
 ```
 
 そこから`*bak*`というglobにマッチするファイルを除外するには
 
 ```
-lf ^tmp ^test --exclude '*bak*'
-lf ^tmp ^test -e '*bak*'
+lf ^tmp test --exclude '*bak*'
+lf ^tmp test -e '*bak*'
 ```
 
 そこから更に`*org*`というglobにマッチするファイルを除外するには
 
 ```
-lf ^tmp ^test --exclude '*bak*' '*org*'
-lf ^tmp ^test -e '*bak*' '*org*'
+lf ^tmp test --exclude '*bak*' '*org*'
+lf ^tmp test -e '*bak*' '*org*'
 ```
 
 ちなみにシングルクオートで囲わなくても大丈夫だがファイル数が増えれば増えるほど遅くなる可能性がある
 
 ```
-lf ^tmp ^test --exlucde *bak* *org*
-lf ^tmp ^test -e *bak* *org*
+lf ^tmp test --exlucde *bak* *org*
+lf ^tmp test -e *bak* *org*
 ```
 
 `*`の代わりに`@`を使うことでシングルクオートで囲わなくても速度を維持できるようになる
 
 ```
-lf ^tmp ^test --exclude @bak@ @org@
-lf ^tmp ^test -e @bak@ @org@
+lf ^tmp test --exclude @bak@ @org@
+lf ^tmp test -e @bak@ @org@
 ```
 
 カレントディレクトリにある拡張子がpdfのファイルを検索するには
