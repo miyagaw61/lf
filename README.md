@@ -15,7 +15,7 @@ fdのバージョンは任意
 ## Usage
 
 ```
-lf [regex...] [-e <glob...>] [-a] [-0] [-d <depth>] [-t <type>] [-f <file-extension>] [-F <file-extension>]
+lf [regex...] [-e <glob...>] [-a] [-0] [-d <depth>] [-t <type>] [-f <file-extension>] [-F <file-extension>] [-I]
 ```
 
 カレントディレクトリにあるtmpという文字列を含むファイルを検索したかったら
@@ -84,8 +84,4 @@ lf -f pdf
 lf -F pdf
 ```
 
--0オプションはfdと同様。
-
-## TODO
-
-- fdの-Iオプション
+-0,-Iオプションはfdと同様。

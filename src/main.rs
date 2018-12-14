@@ -9,6 +9,10 @@ use clap::{App, Arg};
 fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
     let mut fd_d = "fd --type d ".to_string();
     let mut fd_f = "fd --type f --type l ".to_string();
+    if matches.is_present("no-ignore") {
+        fd_d = [&fd_d, "-I "].join("");
+        fd_f = [&fd_f, "-I "].join("");
+    }
     match matches.value_of("depth") {
         Some(depth) => {
             fd_d = [&fd_d, "-d", depth, " "].join("");
@@ -145,6 +149,11 @@ fn main() {
              .short("F")
              .takes_value(true)
              .multiple(true)
+             )
+        .arg(Arg::with_name("no-ignore")
+             .help("do not respect .gitignore")
+             .short("I")
+             .long("no-ignore")
              )
         .get_matches();
     let (d_cmd, f_cmd) = make_cmd(&matches);
