@@ -42,8 +42,8 @@ fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
             for (i, pattern) in patterns.enumerate() {
                 let pattern = pattern.replace("\\", "\\\\");
                 if i == 0 {
-                    cmd_d = [&cmd_d, pattern.as_str()].join("");
-                    cmd_f = [&cmd_f, pattern.as_str()].join("");
+                    cmd_d = [&cmd_d, "'", pattern.as_str(), "'"].join("");
+                    cmd_f = [&cmd_f, "'", pattern.as_str(), "'"].join("");
                 }
                 else {
                     let pattern_len = pattern.chars().count();
