@@ -83,14 +83,7 @@ lf ^tmp test --exclude '*bak*' '*org*'
 lf ^tmp test -e '*bak*' '*org*'
 ```
 
-ちなみにシングルクオートで囲わなくても大丈夫だがファイル数が増えれば増えるほど遅くなる可能性がある
-
-```
-lf ^tmp test --exlucde *bak* *org*
-lf ^tmp test -e *bak* *org*
-```
-
-`*`の代わりに`@`を使うことでシングルクオートで囲わなくても速度を維持できるようになる
+`*`の代わりに`@`を使うことでシングルクオートが必須ではなくなる
 
 ```
 lf ^tmp test --exclude @bak@ @org@
