@@ -9,9 +9,17 @@ use clap::{App, Arg};
 fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
     let mut fd_d = "fd --type d ".to_string();
     let mut fd_f = "fd --type f --type l ".to_string();
-    if ! matches.is_present("all") {
-        fd_d = [&fd_d, "-d1 "].join("");
-        fd_f = [&fd_f, "-d1 "].join("");
+    match matches.value_of("depth") {
+        Some(depth) => {
+            fd_d = [&fd_d, "-d", depth, " "].join("");
+            fd_f = [&fd_f, "-d", depth, " "].join("");
+        },
+        None => {
+            if ! matches.is_present("all") {
+                fd_d = [&fd_d, "-d1 "].join("");
+                fd_f = [&fd_f, "-d1 "].join("");
+            }
+        }
     }
     match matches.values_of("exclude") {
         Some(exclude) => {
@@ -85,6 +93,11 @@ fn main() {
              .help("file only")
              .long("file")
              .short("f")
+        .arg(Arg::with_name("depth")
+             .help("max depth")
+             .long("depth")
+             .short("d")
+             .takes_value(true)
              )
         .get_matches();
     let (d_cmd, f_cmd) = make_cmd(&matches);
