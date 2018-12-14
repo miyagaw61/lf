@@ -72,6 +72,15 @@ fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
         },
         None => {}
     }
+    match matches.values_of("file-exclude") {
+        Some(extensions) => {
+            for extension in extensions {
+                cmd_d = [&cmd_d, " | rg -v '\\.", &extension, "$'"].join("");
+                cmd_f = [&cmd_d, " | rg -v '\\.", &extension, "$'"].join("");
+            }
+        },
+        None => {}
+    }
     cmd_d = [fd_d, cmd_d].join("");
     cmd_f = [fd_f, cmd_f].join("");
     match matches.value_of("type") {
@@ -127,6 +136,13 @@ fn main() {
              .help("file-extension")
              .long("file")
              .short("f")
+             .takes_value(true)
+             .multiple(true)
+             )
+        .arg(Arg::with_name("file-exclude")
+             .help("file-extension exclude")
+             .long("file-exclude")
+             .short("F")
              .takes_value(true)
              .multiple(true)
              )

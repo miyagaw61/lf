@@ -15,7 +15,7 @@ fdのバージョンは任意
 ## Usage
 
 ```
-lf [regex...] [-e <glob...>] [-a] [-0] [-d <depth>] [-t <type>] [-f <file-extension>]
+lf [regex...] [-e <glob...>] [-a] [-0] [-d <depth>] [-t <type>] [-f <file-extension>] [-F <file-extension>]
 ```
 
 カレントディレクトリにあるtmpという文字列を含むファイルを検索したかったら
@@ -78,18 +78,14 @@ lf pdf$ docx$ -e @bak@ @org@
 lf -f pdf
 ```
 
+カレントディレクトリにある拡張子がpdf以外のファイルを検索するには
+
+```
+lf -F pdf
+```
+
 -0オプションはfdと同様。
 
 ## TODO
-
-- 拡張子指定オプション
-
-現状で厳密に拡張子チェックをするには次のようにしなければならないので。
-
-```
-lf '\.py$'
-```
-
-- ディレクトリだけ/ファイルだけ抽出するオプション
 
 - fdの-Iオプション
