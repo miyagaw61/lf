@@ -16,58 +16,64 @@ $ cargo install --git https://github.com/miyagaw61/lf
 lf [regex...] [-e <glob...>] [-a] [-0] [-d <depth>] [-t <type>] [-f <file-extension>] [-F <file-extension>] [-I]
 ```
 
-カレントディレクトリにあるtmpという文字列を含むファイルを検索したかったら
+カレントディレクトリにあるtmpから始まるファイルを検索するには
 
 ```
-lf tmp
+lf ^tmp
 ```
 
-再帰的に検索したかったら
+再帰的に検索するには
 
 ```
-lf -a tmp
+lf -a ^tmp
 ```
 
-depth2で検索したかったら
+depth2で検索するには
 
 ```
-lf -d2 tmp
+lf -d2 ^tmp
 ```
 
-ディレクトリのみ検索したかったら
+ディレクトリのみ検索するには
 
 ```
-lf -t d tmp
+lf -td ^tmp
 ```
 
-ファイルのみ検索したかったら
+ディレクトリ以外を検索するには
 
 ```
-lf -t f tmp
+lf -tf ^tmp
 ```
 
-カレントディレクトリにあるtmpという文字列を含むファイルとtestという文字列を含むファイルを検索したかったら
+カレントディレクトリにあるtmpもしくはtestから始まるファイルを検索するには
 
 ```
-lf tmp test
+lf ^tmp ^test
 ```
 
-そこからbakという文字列が含まれているものを除外するには
+そこから`*bak*`というglobにマッチするファイルを除外するには
 
 ```
-lf tmp test -e '*bak*'
+lf ^tmp ^test -e '*bak*'
 ```
 
-そこから更にorgという文字列が含まれているものを除外するには
+そこから更に`*org*`というglobにマッチするファイルを除外するには
 
 ```
-lf tmp test -e '*bak*' '*org*'
+lf ^tmp ^test -e '*bak*' '*org*'
 ```
 
-ちなみに*の代わりに@を使うことでシングルクオートで囲わなくてもよくなる
+ちなみにシングルクオートで囲わなくても大丈夫だがファイル数が増えれば増えるほど遅くなる可能性がある
 
 ```
-lf pdf$ docx$ -e @bak@ @org@
+lf ^tmp ^test -e *bak* *org*
+```
+
+`*`の代わりに`@`を使うことでシングルクオートで囲わなくても速度を維持できるようになる
+
+```
+lf ^tmp ^test -e @bak@ @org@
 ```
 
 カレントディレクトリにある拡張子がpdfのファイルを検索するには
