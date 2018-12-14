@@ -165,7 +165,8 @@ fn main() {
                     print!("\x00");
                 }
                 else {
-                    println!("{}", oput.stdout.blue().bold().to_string());
+                    let out = ["\n".to_string(), oput.stdout, "\n".to_string()].join("");
+                    println!("{}", out.blue().bold().to_string());
                 }
             }
         },
