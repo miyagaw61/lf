@@ -156,6 +156,10 @@ fn main() {
              .short("I")
              .long("no-ignore")
              )
+        .arg(Arg::with_name("color")
+             .help("color always")
+             .long("color")
+             )
         .get_matches();
     let (d_cmd, f_cmd) = make_cmd(&matches);
     let out = atty::Stream::Stdout;
@@ -171,7 +175,11 @@ fn main() {
                     if isatty {
                         println!("{}", oput.stdout.blue().bold().to_string());
                     } else {
-                        println!("{}", oput.stdout);
+                        if matches.is_present("color") {
+                            println!("{}", oput.stdout.blue().bold().to_string());
+                        } else {
+                            println!("{}", oput.stdout);
+                        }
                     }
                 }
             }
