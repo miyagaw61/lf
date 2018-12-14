@@ -57,6 +57,21 @@ fn make_cmd(matches: &clap::ArgMatches) -> (String, String) {
         },
         None => {}
     }
+    let mut regex_ext = "".to_string();
+    match matches.values_of("file") {
+        Some(extensions) => {
+            for (i, extension) in extensions.enumerate() {
+                if i == 0 {
+                    regex_ext = ["\\.", &extension, "$"].join("");
+                } else {
+                    regex_ext = [&regex_ext, "|\\.", &extension, "$"].join("");
+                }
+            }
+            cmd_d = [&cmd_d, " | rg '", &regex_ext, "'"].join("");
+            cmd_f = [&cmd_d, " | rg '", &regex_ext, "'"].join("");
+        },
+        None => {}
+    }
     cmd_d = [fd_d, cmd_d].join("");
     cmd_f = [fd_f, cmd_f].join("");
     match matches.value_of("type") {
@@ -107,6 +122,13 @@ fn main() {
              .long("depth")
              .short("d")
              .takes_value(true)
+             )
+        .arg(Arg::with_name("file")
+             .help("file-extension")
+             .long("file")
+             .short("f")
+             .takes_value(true)
+             .multiple(true)
              )
         .get_matches();
     let (d_cmd, f_cmd) = make_cmd(&matches);
