@@ -1,6 +1,7 @@
 extern crate renert;
 extern crate clap;
 extern crate colored;
+extern crate atty;
 
 use renert::*;
 use colored::*;
@@ -157,6 +158,8 @@ fn main() {
              )
         .get_matches();
     let (d_cmd, f_cmd) = make_cmd(&matches);
+    let out = atty::Stream::Stdout;
+    let isatty = atty::is(out);
     match system_on_shell(&d_cmd) {
         Ok(oput) => {
             if oput.stdout != "" {
@@ -165,8 +168,11 @@ fn main() {
                     print!("\x00");
                 }
                 else {
-                    let out = ["\n".to_string(), oput.stdout, "\n".to_string()].join("");
-                    println!("{}", out.blue().bold().to_string());
+                    if isatty {
+                        println!("{}", oput.stdout.blue().bold().to_string());
+                    } else {
+                        println!("{}", oput.stdout);
+                    }
                 }
             }
         },
