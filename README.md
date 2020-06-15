@@ -7,7 +7,7 @@ lf - Rust製find代替コマンドであるfdのラッパーコマンド
 ```
 $ cargo install ripgrep
 $ cargo install --git https://github.com/sharkdp/fd
-$ cargo install --git https://github.com/miyagaw61/lf
+$ cargo install --git https://github.com/miyagi1024/lf
 ```
 
 ## Usage
